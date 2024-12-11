@@ -14,26 +14,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Install Node.js
+      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16 # Use the required Node.js version
+          node-version: 20.0.0 # Specify the Node.js version
           cache: 'pnpm'
 
-      # Step 3: Install PNPM
+      # Step 3: Install pnpm explicitly
       - name: Install pnpm
         run: |
-          npm install -g pnpm
+          corepack enable
+          corepack prepare pnpm@latest --activate
 
       # Step 4: Install dependencies
       - name: Install dependencies
         run: pnpm install
 
-      # Step 5: Build Frontend
+      # Step 5: Build the Frontend
       - name: Build Frontend
         run: pnpm --filter frontend build
 
-      # Step 6: Build Backend
+      # Step 6: Build the Backend
       - name: Build Backend
         run: pnpm --filter backend build
