@@ -12,11 +12,14 @@ jobs:
     steps:
       # Step 1: Check out the repository
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: 
+            actions/checkout@v3
+            pnpm/action-setup@v2
 
       # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
+        
         with:
           node-version: 20.0.0 # Specify the Node.js version
           cache: 'pnpm'
@@ -29,7 +32,9 @@ jobs:
 
       # Step 4: Install dependencies
       - name: Install dependencies
-        run: pnpm install
+        run: 
+            pnpm install
+            pnpm test
 
       # Step 5: Build the Frontend
       - name: Build Frontend
