@@ -6,20 +6,34 @@ on:
       - main
 
 jobs:
-  frontend:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Install Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16 # Use the required Node.js version
+          cache: 'pnpm'
+
+      # Step 3: Install PNPM
+      - name: Install pnpm
+        run: |
+          npm install -g pnpm
+
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: pnpm install
-      - name: Build frontend
+
+      # Step 5: Build Frontend
+      - name: Build Frontend
         run: pnpm --filter frontend build
 
-  backend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install dependencies
-        run: pnpm install
-      - name: Build backend
+      # Step 6: Build Backend
+      - name: Build Backend
         run: pnpm --filter backend build
