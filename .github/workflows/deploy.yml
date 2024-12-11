@@ -12,9 +12,7 @@ jobs:
     steps:
       # Step 1: Check out the repository
       - name: Checkout code
-        uses: 
-            actions/checkout@v3
-            pnpm/action-setup@v2
+        uses: actions/checkout@v3
 
       # Step 2: Set up Node.js
       - name: Set up Node.js
@@ -32,9 +30,7 @@ jobs:
 
       # Step 4: Install dependencies
       - name: Install dependencies
-        run: 
-            pnpm install
-            pnpm test
+        run: pnpm install
 
       # Step 5: Build the Frontend
       - name: Build Frontend
