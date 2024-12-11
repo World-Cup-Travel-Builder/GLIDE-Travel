@@ -1,0 +1,25 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build frontend
+        run: pnpm --filter frontend build
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build backend
+        run: pnpm --filter backend build
