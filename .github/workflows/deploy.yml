@@ -10,32 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20.0.0
-          cache: 'pnpm'
+          # Temporarily disable caching for debugging
+          cache: 'npm'
 
-      # Step 3: Install pnpm using pnpm/action-setup
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-          run_install: false # Skip automatic installation, since we’ll run it manually
+      - name: Install pnpm manually
+        run: npm install -g pnpm@latest
 
-      # Step 4: Install dependencies
+      - name: Debug pnpm
+        run: |
+          pnpm --version
+          which pnpm
+          echo "PATH: $PATH"
+
       - name: Install dependencies
         run: pnpm install
 
-      # Step 5: Build the Frontend
       - name: Build Frontend
         run: pnpm --filter frontend build
 
-      # Step 6: Build the Backend
       - name: Build Backend
         run: pnpm --filter backend build
