@@ -10,19 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20.0.0
-          cache: 'npm' # Use 'npm' temporarily; we will add pnpm caching manually.
 
-      - name: Install pnpm manually
+      # Step 3: Install pnpm manually
+      - name: Install pnpm
         run: npm install -g pnpm@latest
 
-      # Cache pnpm store directory
+      # Step 4: Cache pnpm store directory
       - name: Cache pnpm store
         uses: actions/cache@v3
         with:
@@ -31,17 +33,21 @@ jobs:
           restore-keys: |
             pnpm-store-${{ runner.os }}-
 
+      # Step 5: Install dependencies
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Debug: Check pnpm version and PATH
       - name: Debug pnpm
         run: |
           pnpm --version
           which pnpm
           echo "PATH: $PATH"
 
+      # Step 6: Build the Frontend
       - name: Build Frontend
         run: pnpm --filter frontend build
 
+      # Step 7: Build the Backend
       - name: Build Backend
         run: pnpm --filter backend build
