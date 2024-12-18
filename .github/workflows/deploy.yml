@@ -17,20 +17,28 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20.0.0
-          # Temporarily disable caching for debugging
-          cache: 'npm'
+          cache: 'npm' # Use 'npm' temporarily; we will add pnpm caching manually.
 
       - name: Install pnpm manually
         run: npm install -g pnpm@latest
+
+      # Cache pnpm store directory
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Debug pnpm
         run: |
           pnpm --version
           which pnpm
           echo "PATH: $PATH"
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Build Frontend
         run: pnpm --filter frontend build
