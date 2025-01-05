@@ -227,8 +227,8 @@ Run the following commands from the root of the monorepo:
 
 ## **Contact**
 For questions or issues, reach out to the project maintainer:
-- **Name**: Your Name
-- **Email**: your.email@example.com
-- **GitHub**: [Your GitHub Profile](https://github.com/your-username)
+- **Name**: Tyson Hichman
+- **Email**: tyson@arctechautomations.com
+- **GitHub**: [Your GitHub Profile](https://github.com/Thichman)
 
 ---
