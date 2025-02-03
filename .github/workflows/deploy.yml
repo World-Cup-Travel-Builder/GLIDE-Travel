@@ -20,11 +20,11 @@ jobs:
         with:
           node-version: 20.0.0
 
-      # Step 3: Install pnpm manually
+      # Step 3: Install pnpm
       - name: Install pnpm
         run: npm install -g pnpm@latest
 
-      # Step 4: Cache pnpm store directory
+      # Step 4: Cache pnpm dependencies
       - name: Cache pnpm store
         uses: actions/cache@v3
         with:
@@ -37,17 +37,83 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Debug: Check pnpm version and PATH
+      # Debug: Verify pnpm installation
       - name: Debug pnpm
         run: |
           pnpm --version
           which pnpm
           echo "PATH: $PATH"
 
-      # Step 6: Build the Frontend
+      # Step 6: Build Frontend
       - name: Build Frontend
         run: pnpm --filter frontend build
 
-      # Step 7: Build the Backend
+      # Step 7: Build Admin Panel
+      - name: Build Admin Panel
+        run: pnpm --filter admin-panel build
+
+      # Step 8: Build Backend
       - name: Build Backend
         run: pnpm --filter backend build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 1: Set up Node.js and pnpm
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.0.0
+
+      - name: Install pnpm
+        run: npm install -g pnpm@latest
+
+      # Step 2: Cache dependencies
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Step 4: Deploy Frontend (Vercel)
+      - name: Deploy Frontend to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_FRONTEND }}
+        run: |
+          pnpm --filter frontend vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_PROJECT_ID
+
+      # Step 5: Deploy Admin Panel (Vercel)
+      - name: Deploy Admin Panel to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
+        run: |
+          pnpm --filter admin-panel vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_PROJECT_ID
+
+      # Step 6: Deploy Backend (AWS or Other Service)
+      - name: Deploy Backend
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -i private_key $SERVER_USER@$SERVER_HOST "
+            cd /path/to/backend &&
+            git pull origin main &&
+            pnpm install --frozen-lockfile &&
+            pnpm build &&
+            pm2 restart backend
+          "

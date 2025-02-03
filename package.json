@@ -6,15 +6,26 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:frontend": "pnpm --filter frontend dev",
+    "dev:admin-panel": "pnpm --filter admin-panel dev",
     "dev:backend": "pnpm --filter backend start:dev",
     "build:frontend": "pnpm --filter frontend build",
+    "build:admin-panel": "pnpm --filter admin-panel build",
     "build:backend": "pnpm --filter backend build",
     "build": "pnpm --recursive run build",
+    "start:frontend": "pnpm --filter frontend start",
+    "start:admin-panel": "pnpm --filter admin-panel start",
+    "start:backend": "pnpm --filter backend start",
     "start": "pnpm --recursive run start"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "workspaces": [
+    "apps/frontend",
+    "apps/admin-panel",
+    "apps/backend",
+    "libs/*"
+  ],
   "dependencies": {
     "eslint": "^9.16.0",
     "husky": "^9.1.7",
