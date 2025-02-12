@@ -30,10 +30,6 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <header className="p-4 bg-gray-200 flex justify-between items-center text-black">
-            <h1 className="text-xl font-bold">Admin Panel</h1>
-            <AuthButton />
-          </header>
           {children}
         </body>
       </UserProvider>
